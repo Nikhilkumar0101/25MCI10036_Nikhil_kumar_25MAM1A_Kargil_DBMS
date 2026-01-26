@@ -57,6 +57,8 @@ DELETE FROM Project
 WHERE project_id = 201;
 
 CREATE ROLE report_user LOGIN PASSWORD 'report123';
+GRANT CONNECT ON DATABASE exp1 TO report_user;
+GRANT USAGE ON SCHEMA public TO report_user;
 
 GRANT SELECT ON Department TO report_user;
 GRANT SELECT ON Employee TO report_user;
@@ -68,9 +70,7 @@ ALTER TABLE Employee
 ADD phone_number VARCHAR(15);
 
 ALTER TABLE Employee
-MODIFY emp_name VARCHAR(100);
+ALTER COLUMN emp_name TYPE VARCHAR(100);
 
 DROP TABLE Project;
-
-
 
