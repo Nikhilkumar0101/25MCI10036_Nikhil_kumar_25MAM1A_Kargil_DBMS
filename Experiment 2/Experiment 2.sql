@@ -17,7 +17,7 @@ INSERT INTO employee_details (emp_name, department, salary, experience, joining_
 ('Kunal', 'Marketing', 45000, 4, '2020-07-12'),
 ('Sneha', 'HR', 48000, 5, '2019-11-18'),
 ('Vikram', 'Finance', 80000, 10, '2015-03-25');
-SELECT * FROM employee_details
+SELECT * FROM employee_details;
 
 -- Employees with salary greater than 50000
 SELECT * 
@@ -61,4 +61,13 @@ FROM employee_details
 GROUP BY department
 HAVING COUNT(emp_id) >= 2;
 
+-- Display departments where:
+-- 1. Only employees with more than 4 years of experience are considered (row-level filtering)
+-- 2. The average salary of those employees is greater than 60000 (group-level filtering)
+
+SELECT department, AVG(salary) AS avg_salary
+FROM employee_details
+WHERE experience > 4            -- Filters rows before grouping
+GROUP BY department              -- Groups records department-wise
+HAVING AVG(salary) > 60000;      -- Filters groups after aggregation
 
