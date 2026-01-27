@@ -112,7 +112,7 @@ INSERT INTO Employee VALUES (105, 'Karan', 'karan@org.com', 42000, 4);
 INSERT INTO Employee VALUES (106, 'Sneha', 'sneha@org.com', 36000, 5);
 INSERT INTO Employee VALUES (107, 'Anjali', 'anjali@org.com', 47000, 2);
 ```
-<img alt="image" src="images/Emp_table.png' />
+<img alt="image" src="images/Emp_table.png" />
 
 ### **Insert into Project**
 ```sql
@@ -167,6 +167,7 @@ GRANT SELECT ON Project TO report_user;
 REVOKE CREATE ON SCHEMA public FROM report_user;
 ```
 <img alt="image" src="images/revoke.png" />
+
 ---
 
 ## **Step 8: Alter and drop table.**
