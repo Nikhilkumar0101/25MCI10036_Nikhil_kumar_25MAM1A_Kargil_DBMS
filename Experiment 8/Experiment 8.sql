@@ -1,0 +1,99 @@
+-- Table creation and data insertion
+CREATE TABLE Employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    manager_id INT,
+    department VARCHAR(50),
+    salary INT
+);
+
+INSERT INTO Employees VALUES
+(1, 'Amit', NULL, 'Management', 120000),
+(2, 'Ravi', 1, 'Engineering', 80000),
+(3, 'Neha', 1, 'Engineering', 82000),
+(4, 'Karan', 2, 'Engineering', 60000),
+(5, 'Simran', 2, 'Engineering', 62000),
+(6, 'Pooja', 3, 'Engineering', 61000),
+(7, 'Rahul', 3, 'Engineering', 64000),
+(8, 'Arjun', 1, 'HR', 70000);
+
+select * from Employees;
+
+-- Procedure to insert data
+CREATE OR REPLACE PROCEDURE ADD_EMPLOYEE(p_id int,p_name varchar(50),p_manager int,p_dept varchar(50),p_salary int)
+	AS
+	$$
+	BEGIN
+	INSERT INTO Employees VALUES(p_id,p_name,p_manager,p_dept,p_salary);
+	END;
+	$$ LANGUAGE PLPGSQL;
+
+CALL ADD_EMPLOYEE(9,'Kartik',1,'HR',68000);
+
+-- Procedure to update data
+CREATE OR REPLACE PROCEDURE UPDATE_SALARY_PROCC(IN P_EMP_ID INT,INOUT P_SALARY NUMERIC(20,3), OUT STATUS VARCHAR(20))
+	AS
+	$$
+	DECLARE
+	CURR_SAL NUMERIC(20,3);
+	BEGIN
+
+	SELECT SALARY+P_SALARY INTO CURR_SAL FROM employees WHERE EMP_ID=P_EMP_ID;
+	IF NOT FOUND THEN
+	RAISE EXCEPTION 'EMPLOYEE NOT FOUND';
+	END IF;
+
+	UPDATE employees
+	SET SALARY=CURR_SAL WHERE EMP_ID=P_EMP_ID;
+
+	P_SALARY:=CURR_SAL;
+	STATUS:='SUCCESS';
+
+	EXCEPTION
+	WHEN OTHERS THEN
+	IF SQLERRM LIKE '%EMPLOYEE NOT FOUND%' THEN
+	STATUS:='EMPLOYEE NOT FOUND';
+	END IF;
+
+	END;
+
+	$$ LANGUAGE PLPGSQL;
+
+-- EMPLOYEE NOT FOUND
+
+DO
+$$
+	DECLARE
+	EMP_ID INT:=99;
+	STATUS VARCHAR(20);
+	SALARY NUMERIC(20,3):=500;
+	BEGIN
+	CALL UPDATE_SALARY_PROCC(EMP_ID,SALARY,STATUS);
+	RAISE NOTICE 'YOUR STATUS IS %', STATUS;
+	END;
+$$
+
+-- EMPLOYEE FOUND
+
+DO
+$$
+	DECLARE
+	EMP_ID INT:=2;
+	STATUS VARCHAR(20);
+	SALARY NUMERIC(20,3):=500;
+	BEGIN
+	CALL UPDATE_SALARY_PROCC(EMP_ID,SALARY,STATUS);
+	RAISE NOTICE 'YOUR STATUS IS % AND UPDATED SALARY IS %', STATUS, SALARY;
+	END;
+$$
+
+-- Procedure to delete data
+CREATE OR REPLACE PROCEDURE DELETE_EMPLOYEE(p_id int)
+	AS
+	$$
+	BEGIN
+	DELETE FROM Employees WHERE emp_id=p_id;
+	END;
+	$$ LANGUAGE PLPGSQL;
+
+CALL DELETE_EMPLOYEE(9);
